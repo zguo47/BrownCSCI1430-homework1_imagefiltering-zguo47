@@ -22,11 +22,22 @@ def my_imfilter(image, kernel):
     - filter/kernel has any even dimension -> raise an Exception with a suitable error message.
     """
     filtered_image = np.zeros(image.shape)
-
-    ##################
-    # Your code here #
-    print('my_imfilter function in student.py needs to be implemented')
-    ##################
+    k, l = kernel.shape
+    if k % 2 == 0 or l % 2 == 0:
+        raise Exception("Sorry, kernel cannot have any even dimension.\n")
+    if image.shape[2] != None:
+        m, n, c = image.shape
+        image = np.pad(np.asarray(image), (((l-1)//2, (l-1)//2), ((k-1)//2, (k-1)//2), (0, 0)), 'constant')
+        for c in range(c):
+            for i in range(m):
+                for j in range(n):
+                    filtered_image[i][j][c] = np.sum(image[i:i+k, j:j+l]*kernel)
+    else:
+        m, n = image.shape
+        image = np.pad(np.asarray(image), (((l-1)//2, (l-1)//2), ((k-1)//2, (k-1)//2)), 'constant')
+        for i in range(m):
+            for j in range(n):
+                filtered_image[i][j] = np.sum(image[i:i+k, j:j+l]*kernel)
 
     return filtered_image
 
